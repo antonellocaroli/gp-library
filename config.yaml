@@ -1,0 +1,118 @@
+plugins: play info acousticbrainz chroma lastgenre missing types
+#bpmanalyser
+#bpm
+#discogs
+
+
+directory: /var/lib/mpd/music
+
+
+
+import:
+  copy:  no
+  write: no
+
+
+  log: ~/.config/beets/import.log
+  default_action: apply      # One of apply, skip, asis, or none, indicating which option should be the default when selecting an action for a given match.
+
+  languages: en de it
+
+
+
+#play:
+#    command: 
+#    raw: yes
+
+
+
+
+acoustid:
+  apikey: REDACTED           # Command: beet submit
+
+chroma:                      # Turning on fingerprinting can increase the accuracy of the autotagger - especially on files with very poor metadata.
+                             # The Acoustid plugin extends the autotagger to use acoustic fingerprinting to find information for arbitrary audio.
+                             # Install that plugin if you’re willing to spend a little more CPU power to get tags for unidentified albums.
+                             # (But be aware that it does slow down the process.)
+  auto: yes                  # Fingerprint-based autotagging.
+
+acousticbrainz:              # The acousticbrainz plugin gets acoustic-analysis information from the AcousticBrainz project.
+  auto: yes                  # Enable AcousticBrainz during beet import. Default: yes.
+  force: yes                 # Download AcousticBrainz data even for tracks that already have it. Default: no.
+
+
+lastgenre:                   # Fetches tags from Last.fm and assigns them as genres to your albums and items.
+  auto: yes                  # Fetch genres automatically during import. Default: yes.
+  canonical: ~/.config/beets/genres/genres-tree.yaml
+                             # Use a canonicalization tree. Setting this to yes will use a built-in tree.
+  whitelist: ~/.config/beets/genres/genres.txt
+                             # The filename of a custom genre list, yes to use the internal whitelist, or no to consider all genres valid.
+                             # Default: yes.
+  count: 5                   # Number of genres to fetch. Default: 1
+  fallback: 'Pop/Rock'       # A string if to use a fallback genre when no genre is found.
+                             # You can use the empty string '' to reset the genre.
+                             # Default: None.
+  separator: '; '
+  force: no                  # By default, beets will always fetch new genres, even if the files already have one.
+                             # To instead leave genres in place in when they pass the #whitelist: ~/.config/beets/genres.txt,
+                             # set the force option to no.
+  min_weight: 10             # Minimum popularity factor below which genres are discarded. Default: 10.
+  prefer_specific: no        # Sort genres by the most to least specific, rather than most to least popular. Default: no.
+  source: track              # Which entity to look up in Last.fm. Can be either artist, album or track. Default: album. 
+  title_case: yes
+
+
+
+
+#discogs:
+#    index_tracks: yes  
+
+#bpm:
+#  max_strokes: 3
+#  max_strokes: yes
+
+#bpmanalyser:
+#  auto: no
+#  dry-run: no
+#  write: yes
+#  threads: 2
+#  force: no
+#  quiet: no
+
+
+verbose: no
+
+ui:
+    color: yes
+    colors:
+        text_success: green
+        text_warning: blue
+        text_error: red
+        text_highlight: blue
+        text_highlight_minor: lightgray
+        action_default: darkblue
+        action: purple
+
+hook:
+  hooks:
+    #############################################
+    - event: album_imported
+      command: echo "\"{album}\""
+    - event: import
+      command: echo "imported from {paths}"
+    #############################################
+    - event: art_set
+      command: echo "Coverart saved"
+    - event: import_begin
+      command: echo "GP import started..."
+    - event: import_task_apply
+      command: echo "Metadata applied"
+    - event: item_copied
+      command: echo "\"{item}\" copied from \"{source}\" to \"{destination}\""
+    - event: item_moved
+      command: echo "Moved \"{item}\""
+    - event: write
+      command: echo "Writing to {path}"
+    - event: cli_exit
+      command: echo "All tasks finished!"
+

@@ -1,0 +1,7 @@
+# Edit this file to fit your system.
+
+directory: /media/musica/Lossless_new # Destination.
+#library: /media/musica/beets_db/library.db # Database
+#pluginpath:
+  #- ~/.config/beets/beetsplug/fetchartist # https://github.com/dkanada/beets-fetchartist
+  #- ~/.config/beets/beetsplug/discogs_extradata
